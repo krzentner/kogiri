@@ -10,17 +10,17 @@ import git
 
 EIGHT_MEBIBYTES = 8 * 2**20
 
-_LOGGER = logging.getLogger("stick")
+_LOGGER = logging.getLogger("kogiri")
 
 
 def checkpoint_repo(
     run_dir: str,
     launcher_path: Optional[str] = None,
-    checkpoint_branch: str = "stick-checkpoints",
+    checkpoint_branch: str = "kogiri-checkpoints",
     maximum_filesize: int = EIGHT_MEBIBYTES,
 ) -> dict[str, Any]:
     """Find the git repo, starting from `__main__` or launcher_path (if
-    provided), and create a new git commit on the stick-checkpoints branch.
+    provided), and create a new git commit on the kogiri-checkpoints branch.
 
     Also writes out `{run_dir}/from_head.diff` and
     `{run_dir}/from_last_checkpoint.diff`, for easily visualizing
@@ -40,7 +40,7 @@ def checkpoint_repo(
         branch = repo.create_head(checkpoint_branch)
     with tempfile.TemporaryDirectory() as tmp_dir:
         # Ask gitpython to create an index for us in this temporary directory.
-        index_path = os.path.join(tmp_dir, "stick_git_index")
+        index_path = os.path.join(tmp_dir, "kogiri")
         index_file = git.IndexFile(repo, index_path)
         # There appears to be no way to add all modified files to an IndexFile
         # using gitpython.
@@ -49,7 +49,7 @@ def checkpoint_repo(
         for f in get_modified_file_list(git_root_path, maximum_filesize):
             index_file.add(f)
         checkpoint_commit = index_file.commit(
-            f"stick checkpoint of {run_dir}",
+            f"kogiri checkpoint of {run_dir}",
             [branch.commit],
             head=False,
             skip_hooks=True,

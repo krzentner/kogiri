@@ -3,10 +3,10 @@ import os
 import sys
 import logging
 
-import stick
+import kogiri
 
 
-def splitall(path: "stick.PathIsh") -> list[str]:
+def splitall(path: "kogiri.PathIsh") -> list[str]:
     """Split a path into the drive (on windows), the directories, and the file
     in one list."""
     # Files, dirs, or drives
@@ -23,7 +23,7 @@ def splitall(path: "stick.PathIsh") -> list[str]:
 
 
 class FileManager:
-    def __init__(self, file: "stick.FileIsh" = None):
+    def __init__(self, file: "kogiri.FileIsh" = None):
         self.should_close = False
         self.filename = file
         if file is None:
@@ -47,4 +47,4 @@ class FileManager:
 
 
 def warn_internal(msg):
-    logging.getLogger("stick").warning(msg)
+    logging.getLogger("kogiri").warning(msg)

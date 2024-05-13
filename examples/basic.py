@@ -1,3 +1,3 @@
-import stick
+import kogiri
 
-stick.log("test_table", {"x": 0.0})
+kogiri.log_row("test_table", {"x": 0.0})

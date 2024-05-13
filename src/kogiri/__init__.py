@@ -16,8 +16,8 @@ import enum
 import pathlib
 import warnings
 
-import stick
-from stick._utils import warn_internal
+import kogiri
+from kogiri._utils import warn_internal
 
 
 def log_row(
@@ -84,7 +84,7 @@ def log_row(
         assert isinstance(table, str)
     if row is not None and not isinstance(row, (dict, Row)):
         raise ValueError(
-            f"Unsupported row type {type(row)}. " "Use a dictionary or stick.Row."
+            f"Unsupported row type {type(row)}. " "Use a dictionary or kogiri.Row."
         )
     if step is not None:
         assert isinstance(step, int)
@@ -146,8 +146,8 @@ def load_log_file(
     The "$step" key contains the step values provided to log_row().
     """
     # Import the json output engine, since it has no external deps
-    import stick.ndjson_output
-    import stick.csv_output
+    import kogiri.ndjson_output
+    import kogiri.csv_output
 
     _, ext = os.path.splitext(filename)
     if ext in LOAD_FILETYPES:
@@ -155,7 +155,7 @@ def load_log_file(
     else:
         raise ValueError(
             f"Unknown filetype {ext}. Perhaps you need to load "
-            "a stick backend or use one of the well known log "
+            "a kogiri backend or use one of the well known log "
             "types (.ndjson or .csv)"
         )
 
@@ -281,22 +281,22 @@ def init(
     global _INIT_CALLED
     if _INIT_CALLED:
         warn_internal(
-            "stick.init() already called in this process. Most "
-            "likely stick.log_row() was called before "
-            "stick.init()."
+            "kogiri.init() already called in this process. Most "
+            "likely kogiri.log_row() was called before "
+            "kogiri.init()."
         )
         return run_dir
     _INIT_CALLED = True
 
     if _LOGGER is not None:
-        warn_internal("logger was already present before stick.init() was called")
-    from stick.ndjson_output import NDJsonOutputEngine
-    from stick.csv_output import CSVOutputEngine
-    from stick.pprint_output import PPrintOutputEngine
-    from stick.tb_output import TensorBoardOutput
+        warn_internal("logger was already present before kogiri.init() was called")
+    from kogiri.ndjson_output import NDJsonOutputEngine
+    from kogiri.csv_output import CSVOutputEngine
+    from kogiri.pprint_output import PPrintOutputEngine
+    from kogiri.tb_output import TensorBoardOutput
 
     logger = Logger(runs_dir=runs_dir, run_name=run_name)
-    logger.add_output(NDJsonOutputEngine(f"{runs_dir}/{run_name}/stick.ndjson"))
+    logger.add_output(NDJsonOutputEngine(f"{runs_dir}/{run_name}/kogiri.ndjson"))
     logger.add_output(CSVOutputEngine(runs_dir, run_name))
     try:
         logger.add_output(
@@ -308,14 +308,14 @@ def init(
         warn_internal("tensorboard API not installed")
 
     logger.add_output(
-        PPrintOutputEngine(file=f"{runs_dir}/{run_name}/stick_pprint.log")
+        PPrintOutputEngine(file=f"{runs_dir}/{run_name}/kogiri_pprint.log")
     )
 
     # Imported for side effects
     if "torch" in sys.modules:
-        import stick.torch
+        import kogiri.torch
     if "numpy" in sys.modules:
-        import stick.np
+        import kogiri.np
 
     _LOGGER = logger
     return run_dir
@@ -340,7 +340,7 @@ def init_extra(
 
     Run name will default to the main file and current time in ISO 8601 format.
 
-    Initializes stick logging, including all optional
+    Initializes kogiri logging, including all optional
     features.
 
     `config` should be configuration / hyperparameter options. They
@@ -349,14 +349,14 @@ def init_extra(
 
     `seed_all`: If True of "if_present", will seed all libraries
     using `config['seed']`. If you would like to seed manually
-    with another value, you can call `stick.seed_all_imported_modules()`
+    with another value, you can call `kogiri.seed_all_imported_modules()`
 
     If `create_git_checkpoint` is True, creates a git commit on a
-    branch named `stick-checkpoints`, and generates diffs using
-    that commit using `stick.stick_git.checkpoint_repo()`.
+    branch named `kogiri-checkpoints`, and generates diffs using
+    that commit using `kogiri.kogiri_git.checkpoint_repo()`.
     """
     run_dir = init(runs_dir, run_name, stderr_log_level, tb_log_level, tb_log_hparams)
-    logging.getLogger("stick").log(level=int(RESULTS), msg=f"Logging to: {run_dir}")
+    logging.getLogger("kogiri").log(level=int(RESULTS), msg=f"Logging to: {run_dir}")
     global _INIT_EXTRA_CALLED
     if _INIT_EXTRA_CALLED:
         return run_dir
@@ -385,9 +385,9 @@ def init_extra(
 
     if create_git_checkpoint:
         try:
-            import stick.stick_git
+            import kogiri.kogiri_git
 
-            stick.stick_git.checkpoint_repo(run_dir)
+            kogiri.kogiri_git.checkpoint_repo(run_dir)
         except ImportError:
             warn_internal("could not import git, repo was not checkpointed")
 
@@ -495,7 +495,7 @@ _LOGGER = None
 
 
 def get_logger() -> "Logger":
-    """Returns the global logger, calling stick.init() if
+    """Returns the global logger, calling kogiri.init() if
     necessary.
     """
     if _LOGGER is None:
@@ -505,7 +505,7 @@ def get_logger() -> "Logger":
 
 
 def add_output(output_engine):
-    """Adds an output to the global logger, calling stick.init() if
+    """Adds an output to the global logger, calling kogiri.init() if
     necessary.
     """
 
@@ -518,7 +518,7 @@ SUMMARIZERS: dict[str, Callable[[Any, str, Summary], None]] = {}
 Use declare_summarizer to add a summarizer to this dictionary.
 """
 
-_STICK_SUMMARIZE = "stick_summarize"
+_KOGIRI_SUMMARIZE = "kogiri_summarize"
 
 
 def declare_summarizer(type_description: Union[str, type], monkey_patch: bool = True):
@@ -537,13 +537,13 @@ def declare_summarizer(type_description: Union[str, type], monkey_patch: bool = 
         SUMMARIZERS[type_str] = processor
 
         if monkey_patch:
-            # Try to monkey-patch _STICK_SUMMARIZE method onto type
+            # Try to monkey-patch _KOGIRI_SUMMARIZE method onto type
             parts = type_str.split(".")
             try:
                 obj = sys.modules[parts[0]]
                 for p in parts[1:]:
                     obj = getattr(obj, p, None)
-                setattr(obj, _STICK_SUMMARIZE, processor)
+                setattr(obj, _KOGIRI_SUMMARIZE, processor)
             except (KeyError, AttributeError, TypeError) as ex:
                 warnings.warn(
                     f"Coudld not money-patch processor to type {type_str!r}: {ex}"
@@ -608,14 +608,14 @@ def summarize(src: Any, prefix: str, dst: Summary):
         if summarizer is not None:
             summarizer(src, prefix, dst)
         else:
-            summarizer = getattr(src, _STICK_SUMMARIZE, None)
+            summarizer = getattr(src, _KOGIRI_SUMMARIZE, None)
             if summarizer is not None:
                 summarizer(prefix, dst)
 
 
 @dataclass
 class Row:
-    """A row of data. The fundamental unit of logging in stick."""
+    """A row of data. The fundamental unit of logging in kogiri."""
 
     table_name: str
     """The name of the table this row should be logged to."""
@@ -652,7 +652,7 @@ class Row:
 
 
 class Logger:
-    """Main container of stick state.
+    """Main container of kogiri state.
 
     Contains all instantiated OutputEngines, as well as stateful
     table default values (step, name of tables based on callsite).
@@ -676,14 +676,14 @@ class Logger:
     def get_unique_table(self, filename: str, lineno: int) -> str:
         """Get a unique table name given the filename and line
         number. Used when no table name is provided to
-        stick.log_row().
+        kogiri.log_row().
         """
         fileloc = (filename, lineno)
         try:
             return self.fileloc_to_tables[fileloc]
         except KeyError:
             pass
-        parts = stick._utils.splitall(filename)
+        parts = kogiri._utils.splitall(filename)
         for i in range(1, len(parts)):
             if i == 0:
                 table = parts[-1]
@@ -706,7 +706,7 @@ class Logger:
         level).
 
         Convenience features (like default table name, and logging
-        a dictionary) are only available via stick.log_row().
+        a dictionary) are only available via kogiri.log_row().
 
         Returns:
 

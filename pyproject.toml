@@ -1,5 +1,5 @@
 [project]
-name = "stick"
+name = "kogiri"
 version = "0.1.1-dev"
 description = "Log first, ask questions later."
 readme = "README.md"
@@ -54,9 +54,9 @@ recommended = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/krzentner/stick"
-"Bug Reports" = "https://github.com/krzentner/stick/issues"
-"Source" = "https://github.com/krzentner/stick"
+"Homepage" = "https://github.com/krzentner/kogiri"
+"Bug Reports" = "https://github.com/krzentner/kogiri/issues"
+"Source" = "https://github.com/krzentner/kogiri"
 
 # Use setuptools to install the main script
 [build-system]
@@ -72,7 +72,7 @@ include = ["src"]
 venv = ".venv"
 
 [tool.poetry]
-name = "stick"
+name = "kogiri"
 version = "0.1.1-dev"
 description = ""
 authors = ["K.R. Zentner <krzentner@gmail.com>"]

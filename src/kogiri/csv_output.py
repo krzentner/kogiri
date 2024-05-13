@@ -4,13 +4,13 @@ from typing import Optional, Union
 import csv
 import time
 
-import stick
-from stick import ScalarTypes
-from stick._utils import FileManager, warn_internal
+import kogiri
+from kogiri import ScalarTypes
+from kogiri._utils import FileManager, warn_internal
 
 
-@stick.declare_output_engine
-class CSVOutputEngine(stick.OutputEngine):
+@kogiri.declare_output_engine
+class CSVOutputEngine(kogiri.OutputEngine):
     """OutputEngine using the standard library csv module.
 
     Can handle inconsistent rows by rewriting the CSV file.
@@ -18,16 +18,16 @@ class CSVOutputEngine(stick.OutputEngine):
 
     def __init__(
         self,
-        runs_dir: stick.FileIsh,
+        runs_dir: kogiri.FileIsh,
         run_name: str,
-        log_level=stick.TRACE,
+        log_level=kogiri.TRACE,
     ):
         super().__init__(log_level=log_level)
         self.runs_dir = os.path.abspath(runs_dir)
         self.run_name = run_name
         self.writers = {}
 
-    def log_row_inner(self, row: stick.Row):
+    def log_row_inner(self, row: kogiri.Row):
         msg = row.as_summary()
         msg.update(
             {
@@ -122,4 +122,4 @@ def load_csv_file(
     return {k: [_try_convert(row[k]) for row in rows] for k in keys}
 
 
-stick.LOAD_FILETYPES[".csv"] = load_csv_file
+kogiri.LOAD_FILETYPES[".csv"] = load_csv_file

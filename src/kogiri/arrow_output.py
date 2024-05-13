@@ -8,18 +8,18 @@ import pyarrow.fs
 import pyarrow.csv
 import pyarrow.parquet
 
-import stick
+import kogiri
 
 ALL_FILETYPES = [".csv", ".parquet"]
 DEFAULT_FILETYPES = [".csv", ".parquet"]
 
 
-@stick.declare_output_engine
-class ArrowOutputEngine(stick.OutputEngine):
+@kogiri.declare_output_engine
+class ArrowOutputEngine(kogiri.OutputEngine):
     """OutputEngine using pyarrow to write to parquet (and
     optinally csv) files.
     Probably the fastest output engine, although a significant
-    portion of stick runtime is spent in summarization.
+    portion of kogiri runtime is spent in summarization.
 
     Does not currently support tables changing keys during
     logging.
@@ -27,10 +27,10 @@ class ArrowOutputEngine(stick.OutputEngine):
 
     def __init__(
         self,
-        runs_dir: stick.FileIsh,
+        runs_dir: kogiri.FileIsh,
         run_name: str,
         filetypes=DEFAULT_FILETYPES,
-        log_level=stick.TRACE,
+        log_level=kogiri.TRACE,
     ):
         # The arrow backend is relatively efficient, so default to TRACE level.
 
@@ -103,21 +103,21 @@ class ArrowOutputEngine(stick.OutputEngine):
 
 def load_parquet_file(
     filename: str, keys: Optional[list[str]]
-) -> dict[str, list[stick.ScalarTypes]]:
+) -> dict[str, list[kogiri.ScalarTypes]]:
     table = pa.parquet.read_table(filename, columns=keys)
     return table.to_pydict()
 
 
-stick.LOAD_FILETYPES[".parquet"] = load_parquet_file
+kogiri.LOAD_FILETYPES[".parquet"] = load_parquet_file
 
 
 def load_csv_file(
     filename: str, keys: Optional[list[str]]
-) -> dict[str, list[stick.ScalarTypes]]:
+) -> dict[str, list[kogiri.ScalarTypes]]:
     table = pa.csv.read_csv(
         filename, read_options=pa.csv.ReadOptions(column_names=keys)
     )
     return table.to_pydict()
 
 
-stick.LOAD_FILETYPES[".csv"] = load_csv_file
+kogiri.LOAD_FILETYPES[".csv"] = load_csv_file

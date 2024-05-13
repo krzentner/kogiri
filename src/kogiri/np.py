@@ -1,11 +1,11 @@
-"""Enhances stick.flatten to handle numpy arrays."""
-from stick import declare_summarizer
-from stick._utils import warn_internal
+"""Enhances kogiri.summarize to handle numpy arrays."""
+from kogiri import declare_summarizer
+from kogiri._utils import warn_internal
 
 try:
     import numpy as np
 except ImportError as ex:
-    warn_internal("stick.np imported, but numpy could not be imported")
+    warn_internal("kogiri.np imported, but numpy could not be imported")
     warn_internal(ex)
 
 

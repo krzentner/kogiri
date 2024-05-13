@@ -1,7 +1,7 @@
 import logging
 
-from stick import OutputEngine, declare_output_engine, INFO
-from stick._utils import warn_internal
+from kogiri import OutputEngine, declare_output_engine, INFO
+from kogiri._utils import warn_internal
 
 SummaryWriter = None
 
@@ -43,7 +43,7 @@ class TensorBoardOutput(OutputEngine):
         self.writer = SummaryWriter(f"{runs_dir}/{run_name}", flush_secs=flush_secs)
         self.run_name = run_name
         self.log_hparams = log_hparams
-        logging.getLogger("stick").info(
+        logging.getLogger("kogiri").info(
             f"TensorBoardOutput logging at level {self.log_level}"
         )
 

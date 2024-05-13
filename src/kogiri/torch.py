@@ -1,11 +1,11 @@
-"""Enhances stick.flatten to handle common torch types."""
-from stick import summarize, declare_summarizer
-from stick._utils import warn_internal
+"""Enhances kogiri.summarize to handle common torch types."""
+from kogiri import summarize, declare_summarizer
+from kogiri._utils import warn_internal
 
 try:
     import torch
 except ImportError as ex:
-    warn_internal("stick.torch imported, but torch could not be imported")
+    warn_internal("kogiri.torch imported, but torch could not be imported")
     warn_internal(ex)
 
 

@@ -1,5 +1,5 @@
 import numpy as np
-import stick
+import kogiri
 import argparse
 from pathlib import Path
 
@@ -17,7 +17,7 @@ def main(args):
 
     vis = visdom.Visdom()
     runs_dir = Path(args.runs_dir)
-    log_data = stick.load_log_file(runs_dir / "stick.ndjson")
+    log_data = kogiri.load_log_file(runs_dir / "kogiri.ndjson")
     print([k for k in log_data.keys() if k.startswith("$step")])
     for k, v in log_data.items():
         if not isinstance(v[0], str) and not k.startswith("$"):
