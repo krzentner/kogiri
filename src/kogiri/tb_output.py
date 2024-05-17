@@ -1,3 +1,4 @@
+import math
 import logging
 
 from kogiri import OutputEngine, declare_output_engine, INFO
@@ -62,6 +63,10 @@ class TensorBoardOutput(OutputEngine):
         else:
             for k, v in row.as_summary().items():
                 if v is not None and not isinstance(v, str):
+                    if math.isnan(v):
+                        warn_internal(f"{k} is NaN")
+                    if not math.isfinite(v):
+                        warn_internal(f"{k} is not finite")
                     try:
                         self.writer.add_scalar(
                             f"{row.table_name}/{k}".replace(":", "_"), v, row.step
