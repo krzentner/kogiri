@@ -37,5 +37,7 @@ def summarize_module(module, key, dst):
 @declare_summarizer("torch.optim.Optimizer")
 def summarize_optimizer(optimizer, key, dst):
     state = optimizer.state_dict()
-    del state["param_groups"]
+    for param_group in state["param_groups"]:
+        # These are just some lists that clutter up the plotting
+        del param_group["params"]
     summarize(state, key, dst)
