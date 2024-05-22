@@ -4,3 +4,4 @@ stick.egg-info
 /runs
 /docs_build
 /src/*.egg-info
+/dist
