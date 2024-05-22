@@ -1,6 +1,6 @@
 [project]
-name = "kogiri"
-version = "0.2.0"
+name = "noko"
+version = "0.3.0"
 description = "Log first, ask questions later."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -54,9 +54,9 @@ recommended = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/krzentner/kogiri"
-"Bug Reports" = "https://github.com/krzentner/kogiri/issues"
-"Source" = "https://github.com/krzentner/kogiri"
+"Homepage" = "https://github.com/krzentner/noko"
+"Bug Reports" = "https://github.com/krzentner/noko/issues"
+"Source" = "https://github.com/krzentner/noko"
 
 # Use setuptools to install the main script
 [build-system]
@@ -72,7 +72,7 @@ include = ["src"]
 venv = ".venv"
 
 [tool.poetry]
-name = "kogiri"
-version = "0.2.0"
+name = "noko"
+version = "0.3.0"
 description = ""
 authors = ["K.R. Zentner <krzentner@gmail.com>"]

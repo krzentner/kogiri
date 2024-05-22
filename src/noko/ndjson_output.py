@@ -6,13 +6,13 @@ from typing import Optional
 import datetime
 
 
-import kogiri
-from kogiri._utils import warn_internal
-from kogiri import ScalarTypes, is_instance_str
+import noko
+from noko._utils import warn_internal
+from noko import ScalarTypes, is_instance_str
 
 
-@kogiri.declare_output_engine
-class NDJsonOutputEngine(kogiri.OutputEngine):
+@noko.declare_output_engine
+class NDJsonOutputEngine(noko.OutputEngine):
     """OutputEngine that outputs all tables to one file as json
     objects separated by newlines.
     Uses the standard library json module.
@@ -22,21 +22,21 @@ class NDJsonOutputEngine(kogiri.OutputEngine):
 
     def __init__(
         self,
-        file: kogiri.FileIsh = None,
+        file: noko.FileIsh = None,
         summarize: bool = True,
-        log_level: kogiri.LogLevelIsh = kogiri.TRACE,
+        log_level: noko.LogLevelIsh = noko.TRACE,
     ):
         """
         Args:
 
             file (FileIsh): File to log to.
-            summarize (bool): If false, does not use kogiri
+            summarize (bool): If false, does not use noko
                 summarization, and instead logs the raw row with a
                 bespoke, lossy JSONEncoder.
             log_level (LogLevelIsh): log level to listen to.
         """
         super().__init__(log_level=log_level)
-        self.fm = kogiri._utils.FileManager(file)
+        self.fm = noko._utils.FileManager(file)
         self.summarize = summarize
 
     def log_row_inner(self, row):
@@ -232,4 +232,4 @@ def load_ndjson_file(
     return data
 
 
-kogiri.LOAD_FILETYPES[".ndjson"] = load_ndjson_file
+noko.LOAD_FILETYPES[".ndjson"] = load_ndjson_file

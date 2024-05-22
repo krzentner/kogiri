@@ -1,8 +1,8 @@
 """Output by using python's builtin pprint. Mostly suitable for debug logs."""
 from pprint import pprint
 
-import kogiri
-from kogiri import OutputEngine, declare_output_engine
+import noko
+from noko import OutputEngine, declare_output_engine
 
 
 @declare_output_engine
@@ -14,12 +14,12 @@ class PPrintOutputEngine(OutputEngine):
 
     def __init__(
         self,
-        file: kogiri.FileIsh = None,
+        file: noko.FileIsh = None,
         flatten: bool = True,
-        log_level=kogiri.RESULTS,
+        log_level=noko.RESULTS,
     ):
         super().__init__(log_level=log_level)
-        self.fm = kogiri._utils.FileManager(file)
+        self.fm = noko._utils.FileManager(file)
         self.flatten = flatten
 
     def log_row_inner(self, row):

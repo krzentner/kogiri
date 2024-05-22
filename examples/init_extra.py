@@ -1,5 +1,5 @@
-import kogiri
+import noko
 
-run_dir = kogiri.init_extra()
+run_dir = noko.init_extra()
 print("Logging experiment results to", run_dir)
-kogiri.log_row("test_table", {"x": 0.0})
+noko.log_row("test_table", {"x": 0.0})

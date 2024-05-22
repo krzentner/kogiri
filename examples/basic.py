@@ -1,3 +1,3 @@
-import kogiri
+import noko
 
-kogiri.log_row("test_table", {"x": 0.0})
+noko.log_row("test_table", {"x": 0.0})

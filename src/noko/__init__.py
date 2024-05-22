@@ -16,8 +16,8 @@ import enum
 import pathlib
 import warnings
 
-import kogiri
-from kogiri._utils import warn_internal
+import noko
+from noko._utils import warn_internal
 
 
 def log_row(
@@ -84,7 +84,7 @@ def log_row(
         assert isinstance(table, str)
     if row is not None and not isinstance(row, (dict, Row)):
         raise ValueError(
-            f"Unsupported row type {type(row)}. " "Use a dictionary or kogiri.Row."
+            f"Unsupported row type {type(row)}. " "Use a dictionary or noko.Row."
         )
     if step is not None:
         assert isinstance(step, int)
@@ -146,8 +146,8 @@ def load_log_file(
     The "$step" key contains the step values provided to log_row().
     """
     # Import the json output engine, since it has no external deps
-    import kogiri.ndjson_output
-    import kogiri.csv_output
+    import noko.ndjson_output
+    import noko.csv_output
 
     _, ext = os.path.splitext(filename)
     if ext in LOAD_FILETYPES:
@@ -155,7 +155,7 @@ def load_log_file(
     else:
         raise ValueError(
             f"Unknown filetype {ext}. Perhaps you need to load "
-            "a kogiri backend or use one of the well known log "
+            "a noko backend or use one of the well known log "
             "types (.ndjson or .csv)"
         )
 
@@ -281,22 +281,22 @@ def init(
     global _INIT_CALLED
     if _INIT_CALLED:
         warn_internal(
-            "kogiri.init() already called in this process. Most "
-            "likely kogiri.log_row() was called before "
-            "kogiri.init()."
+            "noko.init() already called in this process. Most "
+            "likely noko.log_row() was called before "
+            "noko.init()."
         )
         return run_dir
     _INIT_CALLED = True
 
     if _LOGGER is not None:
-        warn_internal("logger was already present before kogiri.init() was called")
-    from kogiri.ndjson_output import NDJsonOutputEngine
-    from kogiri.csv_output import CSVOutputEngine
-    from kogiri.pprint_output import PPrintOutputEngine
-    from kogiri.tb_output import TensorBoardOutput
+        warn_internal("logger was already present before noko.init() was called")
+    from noko.ndjson_output import NDJsonOutputEngine
+    from noko.csv_output import CSVOutputEngine
+    from noko.pprint_output import PPrintOutputEngine
+    from noko.tb_output import TensorBoardOutput
 
     logger = Logger(runs_dir=runs_dir, run_name=run_name)
-    logger.add_output(NDJsonOutputEngine(f"{runs_dir}/{run_name}/kogiri.ndjson"))
+    logger.add_output(NDJsonOutputEngine(f"{runs_dir}/{run_name}/noko.ndjson"))
     logger.add_output(CSVOutputEngine(runs_dir, run_name))
     try:
         logger.add_output(
@@ -308,14 +308,14 @@ def init(
         warn_internal("tensorboard API not installed")
 
     logger.add_output(
-        PPrintOutputEngine(file=f"{runs_dir}/{run_name}/kogiri_pprint.log")
+        PPrintOutputEngine(file=f"{runs_dir}/{run_name}/noko_pprint.log")
     )
 
     # Imported for side effects
     if "torch" in sys.modules:
-        import kogiri.torch
+        import noko.torch
     if "numpy" in sys.modules:
-        import kogiri.np
+        import noko.np
 
     _LOGGER = logger
     return run_dir
@@ -340,7 +340,7 @@ def init_extra(
 
     Run name will default to the main file and current time in ISO 8601 format.
 
-    Initializes kogiri logging, including all optional
+    Initializes noko logging, including all optional
     features.
 
     `config` should be configuration / hyperparameter options. They
@@ -349,14 +349,14 @@ def init_extra(
 
     `seed_all`: If True of "if_present", will seed all libraries
     using `config['seed']`. If you would like to seed manually
-    with another value, you can call `kogiri.seed_all_imported_modules()`
+    with another value, you can call `noko.seed_all_imported_modules()`
 
     If `create_git_checkpoint` is True, creates a git commit on a
-    branch named `kogiri-checkpoints`, and generates diffs using
-    that commit using `kogiri.kogiri_git.checkpoint_repo()`.
+    branch named `noko-checkpoints`, and generates diffs using
+    that commit using `noko.noko_git.checkpoint_repo()`.
     """
     run_dir = init(runs_dir, run_name, stderr_log_level, tb_log_level, tb_log_hparams)
-    logging.getLogger("kogiri").log(level=int(RESULTS), msg=f"Logging to: {run_dir}")
+    logging.getLogger("noko").log(level=int(RESULTS), msg=f"Logging to: {run_dir}")
     global _INIT_EXTRA_CALLED
     if _INIT_EXTRA_CALLED:
         return run_dir
@@ -385,9 +385,9 @@ def init_extra(
 
     if create_git_checkpoint:
         try:
-            import kogiri.kogiri_git
+            import noko.noko_git
 
-            kogiri.kogiri_git.checkpoint_repo(run_dir)
+            noko.noko_git.checkpoint_repo(run_dir)
         except ImportError:
             warn_internal("could not import git, repo was not checkpointed")
 
@@ -498,7 +498,7 @@ _LOGGER = None
 
 
 def get_logger() -> "Logger":
-    """Returns the global logger, calling kogiri.init() if
+    """Returns the global logger, calling noko.init() if
     necessary.
     """
     if _LOGGER is None:
@@ -508,7 +508,7 @@ def get_logger() -> "Logger":
 
 
 def add_output(output_engine):
-    """Adds an output to the global logger, calling kogiri.init() if
+    """Adds an output to the global logger, calling noko.init() if
     necessary.
     """
 
@@ -521,7 +521,7 @@ SUMMARIZERS: dict[str, Callable[[Any, str, Summary], None]] = {}
 Use declare_summarizer to add a summarizer to this dictionary.
 """
 
-_KOGIRI_SUMMARIZE = "kogiri_summarize"
+_KOGIRI_SUMMARIZE = "noko_summarize"
 
 
 def declare_summarizer(type_description: Union[str, type], monkey_patch: bool = True):
@@ -618,7 +618,7 @@ def summarize(src: Any, prefix: str, dst: Summary):
 
 @dataclass
 class Row:
-    """A row of data. The fundamental unit of logging in kogiri."""
+    """A row of data. The fundamental unit of logging in noko."""
 
     table_name: str
     """The name of the table this row should be logged to."""
@@ -655,7 +655,7 @@ class Row:
 
 
 class Logger:
-    """Main container of kogiri state.
+    """Main container of noko state.
 
     Contains all instantiated OutputEngines, as well as stateful
     table default values (step, name of tables based on callsite).
@@ -679,14 +679,14 @@ class Logger:
     def get_unique_table(self, filename: str, lineno: int) -> str:
         """Get a unique table name given the filename and line
         number. Used when no table name is provided to
-        kogiri.log_row().
+        noko.log_row().
         """
         fileloc = (filename, lineno)
         try:
             return self.fileloc_to_tables[fileloc]
         except KeyError:
             pass
-        parts = kogiri._utils.splitall(filename)
+        parts = noko._utils.splitall(filename)
         for i in range(1, len(parts)):
             if i == 0:
                 table = parts[-1]
@@ -709,7 +709,7 @@ class Logger:
         level).
 
         Convenience features (like default table name, and logging
-        a dictionary) are only available via kogiri.log_row().
+        a dictionary) are only available via noko.log_row().
 
         Returns:
 

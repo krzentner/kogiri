@@ -1,20 +1,20 @@
-import kogiri
-from kogiri import Logger, log_row
+import noko
+from noko import Logger, log_row
 
 
 def test_log_pprint(tmp_path):
-    from kogiri.pprint_output import PPrintOutputEngine
+    from noko.pprint_output import PPrintOutputEngine
     import io
 
     hi = "HI ^_^"
     f = io.StringIO()
     logger = Logger(runs_dir=tmp_path, run_name="test_log_pprint")
-    kogiri._LOGGER = logger
-    logger.add_output(PPrintOutputEngine(f, log_level=kogiri.INFO))
-    log_row(level=kogiri.INFO)
+    noko._LOGGER = logger
+    logger.add_output(PPrintOutputEngine(f, log_level=noko.INFO))
+    log_row(level=noko.INFO)
     content1 = f.getvalue()
     assert hi in content1
-    log_row(level=kogiri.INFO)
+    log_row(level=noko.INFO)
     content2 = f.getvalue()
     assert hi in content2
     assert content2.startswith(content1)
@@ -23,13 +23,13 @@ def test_log_pprint(tmp_path):
 
 
 def test_log_json(tmp_path):
-    from kogiri.ndjson_output import NDJsonOutputEngine
+    from noko.ndjson_output import NDJsonOutputEngine
     import io
 
     hi = "HI ^_^"
     f = io.StringIO()
     logger = Logger(runs_dir=tmp_path, run_name="test_log_json")
-    kogiri._LOGGER = logger
+    noko._LOGGER = logger
     logger.add_output(NDJsonOutputEngine(f))
     log_row()
     content1 = f.getvalue()

@@ -3,3 +3,4 @@ stick.egg-info
 /stick.ndjson
 /runs
 /docs_build
+/src/*.egg-info

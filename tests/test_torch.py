@@ -1,22 +1,22 @@
 import torch
 
-import kogiri
-from kogiri.csv_output import CSVOutputEngine
-import kogiri.torch
+import noko
+from noko.csv_output import CSVOutputEngine
+import noko.torch
 
 
 def test_summarize_tensor(tmp_path):
     run_name = "test_summarize_tensor"
     output = CSVOutputEngine(runs_dir=tmp_path, run_name=run_name)
     output.log_row_inner(
-        kogiri.Row(
+        noko.Row(
             table_name="test_table1",
             raw={"a": torch.arange(10)},
             step=10,
         )
     )
     f_name = f"{tmp_path}/{run_name}/test_table1.csv"
-    data = kogiri.csv_output.load_csv_file(f_name)
+    data = noko.csv_output.load_csv_file(f_name)
     assert data["a.mean"] == [4.5]
     assert data["a.min"] == [0]
     assert data["a.max"] == [9]

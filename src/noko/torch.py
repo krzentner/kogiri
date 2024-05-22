@@ -1,11 +1,11 @@
-"""Enhances kogiri.summarize to handle common torch types."""
-from kogiri import summarize, declare_summarizer
-from kogiri._utils import warn_internal
+"""Enhances noko.summarize to handle common torch types."""
+from noko import summarize, declare_summarizer
+from noko._utils import warn_internal
 
 try:
     import torch
 except ImportError as ex:
-    warn_internal("kogiri.torch imported, but torch could not be imported")
+    warn_internal("noko.torch imported, but torch could not be imported")
     warn_internal(ex)
 
 
