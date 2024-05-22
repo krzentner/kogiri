@@ -34,6 +34,13 @@ You can also install directly from github:
 pip install "git+https://github.com/krzentner/noko.git@v0.3.0#egg=noko[recommended]"
 ```
 
+The `recommended` extra adds packages that can be easily installed and support useful but optional features:
+
+ - `GitPython` is used for the `create_git_checkpoint` option and the `noko.noko_git.checkpoint_repo()` function.
+
+ - `pyarrow` is used by the `noko.arrow_output.ArrowOutputEngine` to log to parquet files. Note that this backend is not added to the logger by default.
+
+ - `tensorboardX` is used by `noko.tb_output.TensorBoardOutput` to log to tensorboard. `noko` can also used the tensorboard packages in `torch.utils` and `tf.summary`. By default this backend _is_ added to the logger.
 
 ## Key Idea
 
