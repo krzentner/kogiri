@@ -25,8 +25,13 @@ so depend on a specific version.
 
 The current recommended install method is:
 
+```sh
+pip install "noko[recommended]==0.3.0"
 ```
-pip install "git+https://github.com/krzentner/noko.git@v0.1.1#egg=noko[recommended]"
+
+You can also install directly from github:
+```sh
+pip install "git+https://github.com/krzentner/noko.git@v0.3.0#egg=noko[recommended]"
 ```
 
 
